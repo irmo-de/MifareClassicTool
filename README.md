@@ -122,7 +122,7 @@ normal RFID-Readers and some special software
 [mfoc](https://github.com/nfc-tools/mfoc)).
 
 The application comes with standard key files called
-*std.keys* and *extended-std.keys*, which contain the
+*std.keys*, *extended-std.keys* and *hotel-std.keys*, which contain the
 well known keys and some standard keys from a short Google search.
 You can try to read a tag with these key files using
 &quot;Read Tag&quot; from the main menu. Changes to these key files
