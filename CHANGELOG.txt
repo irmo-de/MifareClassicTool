@@ -1,5 +1,9 @@
 Changelog of MifareClassicTool (MCT):
 
+Version 4.3.1:
+ * Target Android SDK 35.
+ * Fixed one possible crash.
+
 Version 4.3.0:
  * Added feature to write to Value Blocks if only
    decrement/transfer/restore permissions are available
