@@ -712,4 +712,22 @@
         <item>简体中文 (zh)</item>
     </string-array>
 
+    <!-- Fast Clone Tiles -->
+    <string name="action_fast_clone">Clone %d</string>
+    <string name="action_fast_clone_not_configured">Not configured.\nLong press to set up.</string>
+    <string name="dialog_fast_clone_config_title">Configure Fast Clone</string>
+    <string name="dialog_fast_clone_name_hint">Tile name</string>
+    <string name="action_select_dump_file">Select Dump File</string>
+    <string name="action_select_key_files">Select Key Files</string>
+    <string name="action_clear_tile">Clear</string>
+    <string name="info_fast_clone_no_dump">No dump file selected.</string>
+    <string name="info_fast_clone_saved">Fast clone tile saved.</string>
+    <string name="info_fast_clone_cleared">Fast clone tile cleared.</string>
+    <string name="info_fast_clone_not_configured">This tile is not configured.\nLong press to set up.</string>
+    <string name="info_fast_clone_dump_not_found">Dump file not found.</string>
+    <string name="text_fast_clone_present_tag">Present tag to write clone&#8230;</string>
+    <string name="title_activity_fast_clone">Fast Clone</string>
+    <string name="info_fast_clone_dump_selected">Dump: %s</string>
+    <string name="info_fast_clone_keys_selected">Keys: %s</string>
+
 </resources>

@@ -211,6 +211,12 @@
             android:icon="@drawable/hex_to_ascii"
             android:label="@string/title_activity_data_conversion_tool" >
         </activity>
+        <activity
+            android:name=".Activities.FastCloneActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:icon="@drawable/clone_uid"
+            android:label="@string/title_activity_fast_clone" >
+        </activity>
 
     </application>
 

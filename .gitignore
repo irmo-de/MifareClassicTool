@@ -30,3 +30,4 @@ Mifare Classic Tool/app/release
 .vscode
 build
 *.jar
+.history
