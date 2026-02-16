@@ -361,36 +361,60 @@ public class FastCloneActivity extends BasicActivity {
         final Activity a = this;
         final Handler handler = new Handler(Looper.getMainLooper());
         new Thread(() -> {
-            for (int sector : writeOnPos.keySet()) {
-                byte[][] keys = keyMap.get(sector);
-                for (int block : writeOnPos.get(sector).keySet()) {
-                    byte[] writeKey = null;
-                    boolean useAsKeyB = true;
-                    int wi = writeOnPos.get(sector).get(block);
-                    if (wi == 1 || wi == 4) {
-                        writeKey = keys[0];
-                        useAsKeyB = false;
-                    } else if (wi == 2 || wi == 5 || wi == 6) {
-                        writeKey = keys[1];
-                    }
+            // Sort sectors for deterministic write order.
+            Integer[] sectors = writeOnPos.keySet().toArray(new Integer[0]);
+            java.util.Arrays.sort(sectors);
 
-                    int result = 0;
-                    for (int i = 0; i < 2; i++) {
-                        result = reader.writeBlock(sector, block,
-                                mDumpWithPos.get(sector).get(block),
-                                writeKey, useAsKeyB);
-                        if (result == 0) {
-                            break;
+            // Write all blocks twice to work around timing/reliability issues
+            // where some sectors (e.g. sector 7) don't get written on the first pass.
+            for (int pass = 0; pass < 2; pass++) {
+                for (int sector : sectors) {
+                    byte[][] keys = keyMap.get(sector);
+                    // Sort blocks for deterministic write order.
+                    Integer[] blocks = writeOnPos.get(sector).keySet().toArray(new Integer[0]);
+                    java.util.Arrays.sort(blocks);
+                    for (int block : blocks) {
+                        byte[] writeKey = null;
+                        boolean useAsKeyB = true;
+                        int wi = writeOnPos.get(sector).get(block);
+                        if (wi == 1 || wi == 4) {
+                            writeKey = keys[0];
+                            useAsKeyB = false;
+                        } else if (wi == 2 || wi == 5 || wi == 6) {
+                            writeKey = keys[1];
+                        }
+
+                        // Retry up to 3 times with delays per attempt.
+                        int result = 0;
+                        for (int i = 0; i < 3; i++) {
+                            result = reader.writeBlock(sector, block,
+                                    mDumpWithPos.get(sector).get(block),
+                                    writeKey, useAsKeyB);
+                            if (result == 0) {
+                                break;
+                            }
+                            try {
+                                Thread.sleep(100);
+                            } catch (InterruptedException e) {
+                                // Ignore.
+                            }
+                        }
+
+                        if (result != 0 && pass == 1) {
+                            // Only report error on the second pass.
+                            handler.post(() -> Toast.makeText(a,
+                                    R.string.info_write_error,
+                                    Toast.LENGTH_LONG).show());
+                            reader.close();
+                            warning.cancel();
+                            return;
                         }
                     }
-
-                    if (result != 0) {
-                        handler.post(() -> Toast.makeText(a,
-                                R.string.info_write_error,
-                                Toast.LENGTH_LONG).show());
-                        reader.close();
-                        warning.cancel();
-                        return;
+                    // Delay between sectors for reliability.
+                    try {
+                        Thread.sleep(50);
+                    } catch (InterruptedException e) {
+                        // Ignore.
                     }
                 }
             }
